@@ -47,9 +47,15 @@ def get_artists(artist_name):
 def get_album_tracks(album_id):
     tracks = session.get_album_tracks(album_id)
     result = []
-    print(dir(tracks[0]))
     for track in tracks:
-        result.append({'name': track.name, 'popularity': track.popularity, 'duration': track.duration, 'track_number': track.track_num})
+        result.append({
+            'name': track.name,
+            'popularity': track.popularity,
+            'duration': track.duration,
+            'track_number': track.track_num,
+            "id": track.id,
+            'artist': track.artist.name,
+        })
     return result
 
 
@@ -116,7 +122,10 @@ def get_user_picture():
     user = session.request('GET', '/v1/users/{}?countryCode={}'.format(user_id, country_code), headers = {'authorization': 'Bearer {}'.format(access_token)})
     return user.content 
 
-    
+def get_playback_info(track_id):    
+    stream_link = session.request('GET', 'https://api.tidal.com/v1/tracks/{}/playbackinfopostpaywall?&audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL'.format(track_id), headers = {'authorization': 'Bearer {}'.format(access_token)})
+    return stream_link.content
+
 
 
 

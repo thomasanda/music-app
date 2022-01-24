@@ -7,6 +7,7 @@ import tidal from '../api/tidal';
 const SearchBar = ({ setSelectedValue }) => {
   const [inputValue, setInputValue] = useState('');
 
+
   const handleInputChange = value => {
     setInputValue(value)
   }

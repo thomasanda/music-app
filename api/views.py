@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import tidal
+import json
+import base64
 
 main = Blueprint('main', __name__)
 
@@ -40,3 +42,11 @@ def get_user_picture():
 def get_album_tracks(album_id):
     tracks = tidal.get_album_tracks(album_id)
     return jsonify(tracks)
+
+@main.route('/get_playback_info/<track_id>', methods=['GET'])
+def get_playback_info(track_id):
+    playback_info = tidal.get_playback_info(track_id)
+    message = json.loads(playback_info.decode('ascii'))
+    message_bytes = base64.b64decode(message['manifest'])
+    decoded = json.loads(message_bytes.decode('ascii'))
+    return jsonify(message, decoded)
