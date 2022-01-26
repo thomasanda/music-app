@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import AudioControls from './AudioControls';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import AudioControls from "./AudioControls";
 
-const AudioPlayer = ({ trackURL, albumTracks }) => {
-
-
+const AudioPlayer = ({ trackURL, albumTracks, selectedTrack }) => {
   const [trackIndex, setTrackIndex] = useState(0);
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const { name, artist } = albumTracks[trackIndex]
+  const { name, artist } = albumTracks[trackIndex];
 
   const audioRef = useRef(new Audio());
   const intervalRef = useRef();
@@ -16,18 +14,34 @@ const AudioPlayer = ({ trackURL, albumTracks }) => {
 
   const { duration } = audioRef.current;
 
-  const currentPercentage = duration ? `${(trackProgress / duration) * 100}%` : '0%';
+  const currentPercentage = duration
+    ? `${(trackProgress / duration) * 100}%`
+    : "0%";
   const trackStyling = `
      -webkit-gradient(linear, 0% 0%, 100% 0%, color-stop(${currentPercentage}, #fff), color-stop(${currentPercentage}, #777) )
-   `
+   `;
+
+  useEffect(() => {
+    if (albumTracks && selectedTrack) {
+      console.log(albumTracks);
+      try {
+        const index = albumTracks.findIndex(
+          (el) => el.id === Number(selectedTrack)
+        );
+        setTrackIndex(index);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [selectedTrack, albumTracks]);
 
   const toNextTrack = useCallback(() => {
     if (trackIndex < albumTracks.length - 1) {
       setTrackIndex(trackIndex + 1);
     } else {
-      setTrackIndex(0)
+      setTrackIndex(0);
     }
-  }, [albumTracks.length, trackIndex])
+  }, [albumTracks.length, trackIndex]);
 
   const startTimer = useCallback(() => {
     clearInterval(intervalRef.current);
@@ -38,21 +52,20 @@ const AudioPlayer = ({ trackURL, albumTracks }) => {
         setTrackProgress(audioRef.current.currentTime);
       }
     }, [1000]);
-  }, [toNextTrack])
+  }, [toNextTrack]);
 
-
-  const onScrub = value => {
+  const onScrub = (value) => {
     clearInterval(intervalRef.current);
     audioRef.current.currentTime = value;
     setTrackProgress(audioRef.current.currentTime);
-  }
+  };
 
   const onScrubEnd = () => {
     if (!isPlaying) {
-      setIsPlaying(true)
+      setIsPlaying(true);
     }
     startTimer();
-  }
+  };
 
   const toPrevTrack = () => {
     if (trackIndex - 1 < 0) {
@@ -60,9 +73,7 @@ const AudioPlayer = ({ trackURL, albumTracks }) => {
     } else {
       setTrackIndex(trackIndex - 1);
     }
-  }
-
-
+  };
 
   useEffect(() => {
     if (isPlaying) {
@@ -72,18 +83,18 @@ const AudioPlayer = ({ trackURL, albumTracks }) => {
       clearInterval(intervalRef.current);
       audioRef.current.pause();
     }
-  }, [isPlaying, startTimer])
+  }, [isPlaying, startTimer]);
 
   useEffect(() => {
     return () => {
       audioRef.current.pause();
       clearInterval(intervalRef.current);
-    }
+    };
   }, []);
 
   useEffect(() => {
     audioRef.current.pause();
-
+    console.log("trackURL", trackURL);
     audioRef.current = new Audio(trackURL[trackIndex]);
     setTrackProgress(audioRef.current.currentTime);
 
@@ -96,19 +107,12 @@ const AudioPlayer = ({ trackURL, albumTracks }) => {
     }
   }, [trackURL, trackIndex, startTimer]);
 
-
-
-
   return (
-    <div className='audio-player'>
-      <div className='track-info'>
-        <img
-          className='picture'
-          src={name}
-          alt={`${name} by ${artist}`}
-        />
-        <h2 className='title'>{name}</h2>
-        <h3 className='artist'>{artist}</h3>
+    <div className="w-full text-center border-t border-grey bg-blue-200 fixed bottom-0 left-0 w-full">
+      <div className="track-info">
+        <img className="picture" src={name} alt={`${name} by ${artist}`} />
+        <h2 className="title">{name}</h2>
+        <h3 className="artist">{artist}</h3>
         <AudioControls
           isPlaying={isPlaying}
           onPrevClick={toPrevTrack}
@@ -116,21 +120,20 @@ const AudioPlayer = ({ trackURL, albumTracks }) => {
           onPlayPauseClick={setIsPlaying}
         />
         <input
-          type='range'
+          type="range"
           value={trackProgress}
-          step='1'
-          min='0'
+          step="1"
+          min="0"
           max={duration ? duration : `${duration}`}
-          className='progress'
-          onChange={e => onScrub(e.target.value)}
+          className="progress"
+          onChange={(e) => onScrub(e.target.value)}
           onMouseUp={onScrubEnd}
           onKeyUp={onScrubEnd}
           style={{ background: trackStyling }}
         />
       </div>
     </div>
-
-  )
-}
+  );
+};
 
 export default AudioPlayer;
