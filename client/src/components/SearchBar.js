@@ -1,44 +1,36 @@
-import React, { useState } from 'react';
-import AsyncSelect from 'react-select/async';
-
-import tidal from '../api/tidal';
-
+import React, { useState } from "react";
+import AsyncSelect from "react-select/async";
+import useFetch from "../hooks/useFetch";
 
 const SearchBar = ({ setSelectedValue }) => {
-  const [inputValue, setInputValue] = useState('');
+  // const [inputValue, setInputValue] = useState("");
+  const { data, setData } = useFetch();
 
+  const handleInputChange = (value) => {
+    setData({ ...data, slug: value });
+  };
 
-  const handleInputChange = value => {
-    setInputValue(value)
-  }
-
-  const handleChange = value => {
-    setSelectedValue(value)
-  }
+  const handleChange = (value) => {
+    setSelectedValue(value);
+  };
   const loadOptions = async (inputValue) => {
-    if (inputValue !== '') {
-      const res = await tidal.get(`/search_artist/${inputValue}`)
-      return res.data
-    }
-  }
+    return data.results;
+  };
 
   return (
     <div className="search-bar">
       <AsyncSelect
-        cacheOptions
-        defaultOptions
-        getOptionLabel={e => e.name}
-        getOptionValue={e => e.id}
+        getOptionLabel={(e) => e.name}
+        getOptionValue={(e) => e.id}
         loadOptions={loadOptions}
         onInputChange={handleInputChange}
         onChange={handleChange}
-        placeholder='Search...'
+        placeholder="Search Artists..."
         isClearable={true}
         backspaceRemovesValue={true}
       />
     </div>
-  )
-
-}
+  );
+};
 
 export default SearchBar;

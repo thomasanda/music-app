@@ -6,7 +6,7 @@ const AudioPlayer = ({ trackURL, albumTracks, selectedTrack }) => {
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const { name, artist } = albumTracks[trackIndex];
+  const { name, artist } = albumTracks ? albumTracks[trackIndex] : "";
 
   const audioRef = useRef(new Audio());
   const intervalRef = useRef();
@@ -23,7 +23,6 @@ const AudioPlayer = ({ trackURL, albumTracks, selectedTrack }) => {
 
   useEffect(() => {
     if (albumTracks && selectedTrack) {
-      console.log(albumTracks);
       try {
         const index = albumTracks.findIndex(
           (el) => el.id === Number(selectedTrack)
@@ -94,7 +93,7 @@ const AudioPlayer = ({ trackURL, albumTracks, selectedTrack }) => {
 
   useEffect(() => {
     audioRef.current.pause();
-    console.log("trackURL", trackURL);
+    console.log("trackURL", trackURL[trackIndex]);
     audioRef.current = new Audio(trackURL[trackIndex]);
     setTrackProgress(audioRef.current.currentTime);
 

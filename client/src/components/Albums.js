@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { FaChevronDown } from "react-icons/fa";
 
 import tidal from "../api/tidal";
 
@@ -9,6 +10,7 @@ const Albums = ({
   setAlbumTracks,
   albumTracks,
   setSelectedTrack,
+  selectedTrack,
 }) => {
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -25,21 +27,33 @@ const Albums = ({
     }
   }, [selectedValue]);
 
+  // useEffect(() => {
+  //   let trackURLS = [];
+  //   try {
+  //     if (albumTracks !== null) {
+  //       albumTracks.forEach(async (id) => {
+  //         await tidal
+  //           .get(`get_playback_info/${id.id}`)
+  //           .then((url) => trackURLS.push(url.data[1].urls[0]))
+  //           .then(() => setTrackURL(trackURLS));
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [albumTracks, setTrackURL]);
+
   useEffect(() => {
-    let trackURLS = [];
     try {
       if (albumTracks !== null) {
-        albumTracks.forEach(async (id) => {
-          await tidal
-            .get(`get_playback_info/${id.id}`)
-            .then((url) => trackURLS.push(url.data[1].urls[0]))
-            .then(() => setTrackURL(trackURLS));
-        });
+        tidal
+          .get(`get_playback_info/${selectedTrack}`)
+          .then((url) => setTrackURL(url.data[1].urls[0]));
       }
     } catch (err) {
       console.error(err);
     }
-  }, [albumTracks, setTrackURL]);
+  }, [albumTracks, selectedTrack, setTrackURL]);
 
   const handleClick = async (albumId) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -76,26 +90,27 @@ const Albums = ({
           {selectedId && (
             <motion.div
               layoutId={selectedId}
-              className="w-screen order-first bg-red-300 z-50 scroll-auto grid grid-cols-3"
+              className="w-screen h-80 order-first z-50 grid grid-cols-2 backdrop-blur-sm bg-white/30"
             >
               <motion.img
                 src={data.albums[selectedId - 1].picture}
                 key={selectedId}
                 alt={data.albums[selectedId - 1].name}
-                className="flex-shrink-0 mx-auto bg-black rounded-t-lg"
+                className="mx-auto bg-black rounded-t-lg"
               />
-              <motion.ul>
+              <motion.ul className="overflow-y-auto scrollbar-hide">
                 {albumTracks.map((album, idx) => (
                   <motion.li
                     id={album.id}
                     onClick={(e) => setSelectedTrack(e.target.id)}
+                    className="ml-10 w-4/5 font-mono border-solid border-2 border-blue-200 mt-1 backdrop-blur-sm bg-black/30 text-white cursor-pointer hover:scale-105"
                   >
-                    {album.name}
+                    {album.trackNumber}. {album.name}
                   </motion.li>
                 ))}
               </motion.ul>
               <motion.button onClick={(e) => setSelectedId(null)}>
-                Click me
+                <FaChevronDown className="mx-auto mt-1 h-9" />
               </motion.button>
             </motion.div>
           )}

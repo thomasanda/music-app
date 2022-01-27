@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import Albums from "./components/Albums";
 import ProfileInfo from "./components/ProfileInfo";
-import AudioPlayer from "./components/AudioPlayer";
-// import Album from "https://framer.com/m/Album-VI6H.js@K9xaOeafsr8b3fZ8u3Pn";
+import AudioPlayer2 from "./components/AudioPlayer2";
 
 const App = () => {
   const [selectedValue, setSelectedValue] = useState(null);
@@ -22,9 +21,10 @@ const App = () => {
         setAlbumTracks={setAlbumTracks}
         albumTracks={albumTracks}
         setSelectedTrack={setSelectedTrack}
+        selectedTrack={selectedTrack}
       />
       {trackURL && (
-        <AudioPlayer
+        <AudioPlayer2
           trackURL={trackURL}
           albumTracks={albumTracks}
           selectedTrack={selectedTrack}
