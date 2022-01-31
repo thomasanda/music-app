@@ -84,6 +84,8 @@ def get_playlists_tracks_popularity():
 
 def add_track_to_favorites(track_id):
     favorites.add_track(track_id)
+    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
 
 def get_favorite_tracks():
     tracks = favorites.tracks()

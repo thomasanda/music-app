@@ -50,3 +50,8 @@ def get_playback_info(track_id):
     message_bytes = base64.b64decode(message['manifest'])
     decoded = json.loads(message_bytes.decode('ascii'))
     return jsonify(message, decoded)
+
+@main.route('/add_track_to_favorites/<track_id>', methods=['POST'])
+def add_track_to_favorites(track_id):
+    tidal.add_track_to_favorites(track_id)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 

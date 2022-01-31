@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
+import { ControlledMenu, MenuItem, useMenuState } from "@szhsin/react-menu";
+import "@szhsin/react-menu/dist/index.css";
 
 import tidal from "../api/tidal";
 
@@ -14,6 +16,9 @@ const Albums = ({
 }) => {
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const { toggleMenu, ...menuProps } = useMenuState();
+  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+  const [favoriteId, setFavoriteId] = useState();
 
   useEffect(() => {
     try {
@@ -90,7 +95,7 @@ const Albums = ({
           {selectedId && (
             <motion.div
               layoutId={selectedId}
-              className="w-screen h-80 order-first z-50 grid grid-cols-2 backdrop-blur-sm bg-white/30"
+              className="w-screen h-80 order-first z-50 grid grid-cols-2 backdrop-blur bg-black/90"
             >
               <motion.img
                 src={data.albums[selectedId - 1].picture}
@@ -98,12 +103,36 @@ const Albums = ({
                 alt={data.albums[selectedId - 1].name}
                 className="mx-auto bg-black rounded-t-lg"
               />
-              <motion.ul className="overflow-y-auto scrollbar-hide">
+              <motion.ul
+                className="overflow-y-auto scrollbar-hide"
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setAnchorPoint({ x: e.clientX, y: e.clientY });
+                  toggleMenu(true);
+                }}
+              >
+                {" "}
+                <ControlledMenu
+                  {...menuProps}
+                  anchorPoint={anchorPoint}
+                  onClose={() => toggleMenu(false)}
+                >
+                  <MenuItem
+                    onClick={(e) =>
+                      tidal
+                        .post(`add_track_to_favorites/${favoriteId}`)
+                        .then((result) => console.log(result.status))
+                    }
+                  >
+                    Add to favorites
+                  </MenuItem>
+                </ControlledMenu>
                 {albumTracks.map((album, idx) => (
                   <motion.li
                     id={album.id}
                     onClick={(e) => setSelectedTrack(e.target.id)}
-                    className="ml-10 w-4/5 font-mono border-solid border-2 border-blue-200 mt-1 backdrop-blur-sm bg-black/30 text-white cursor-pointer hover:scale-105"
+                    className="ml-10 w-4/5 font-mono border-solid border-2 border-blue-200 mt-1 backdrop-blur-sm bg-black/30 text-white cursor-pointer hover:scale-105 truncate"
+                    onMouseEnter={(e) => setFavoriteId(e.target.id)}
                   >
                     {album.trackNumber}. {album.name}
                   </motion.li>

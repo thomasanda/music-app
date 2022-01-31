@@ -16,7 +16,7 @@ const AudioPlayer2 = ({ trackURL, selectedTrack, albumTracks }) => {
         console.error(err);
       }
     }
-  }, [selectedTrack, albumTracks]);
+  }, [selectedTrack]);
 
   return (
     <div className="flex w-full justify-center border-t border-grey bg-blue-200 fixed bottom-0 left-0 w-full">
