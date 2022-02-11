@@ -1,16 +1,18 @@
+from tkinter import E
 from flask import Blueprint, jsonify, request
 from . import tidal
 import json
 import base64
+import re
+from xml.etree import ElementTree
+from mpegdash.parser import MPEGDASHParser
+
 
 main = Blueprint('main', __name__)
 
 @main.route('/get_artist_albums', methods=['GET'])
 def get_artist_albums():
-    # artist_data = request.get_json()
-
     playlists = tidal.get_playlists_tracks_popularity()
-
     return jsonify(({'playlists': playlists}))
 
 @main.route('/get_user_playlists', methods=['GET'])
@@ -46,12 +48,23 @@ def get_album_tracks(album_id):
 @main.route('/get_playback_info/<track_id>', methods=['GET'])
 def get_playback_info(track_id):
     playback_info = tidal.get_playback_info(track_id)
-    message = json.loads(playback_info.decode('ascii'))
+    message = json.loads(playback_info.decode('utf-8'))
     message_bytes = base64.b64decode(message['manifest'])
+    # xml = re.sub(r'xmlns="[^"]+"', '', message_bytes, count=1)
+    # root = ElementTree.fromstring(xml)
+    # mpd = MPEGDASHParser.parse(xml)
     decoded = json.loads(message_bytes.decode('ascii'))
-    return jsonify(message, decoded)
+    # print(mpd)
+    return  jsonify(message, decoded)
 
 @main.route('/add_track_to_favorites/<track_id>', methods=['POST'])
 def add_track_to_favorites(track_id):
     tidal.add_track_to_favorites(track_id)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
+@main.route('/add_track_to_playlist/<data>', methods=['POST'])
+def add_track_to_playlist(data):
+    dataObject = json.loads(data)
+    print(dataObject['track'])
+    tidal.add_tracks_to_playlist(dataObject['track'], dataObject['playlist'])
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 

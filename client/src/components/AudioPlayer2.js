@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import ReactAudioPlayer from "react-audio-player";
 
 const AudioPlayer2 = ({ trackURL, selectedTrack, albumTracks }) => {
-  const [trackIndex, setTrackIndex] = useState(0);
+  // const [trackIndex, setTrackIndex] = useState(0);
   const { name, artist } = albumTracks;
 
-  useEffect(() => {
-    if (albumTracks && selectedTrack) {
-      try {
-        const index = albumTracks.findIndex(
-          (el) => el.id === Number(selectedTrack)
-        );
-        setTrackIndex(index);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }, [selectedTrack]);
+  // useEffect(() => {
+  //   if (albumTracks && selectedTrack) {
+  //     try {
+  //       const index = albumTracks.findIndex(
+  //         (el) => el.id === Number(selectedTrack)
+  //       );
+  //       setTrackIndex(index);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   }
+  // }, [selectedTrack]);
 
   return (
     <div className="flex w-full justify-center border-t border-grey bg-blue-200 fixed bottom-0 left-0 w-full">

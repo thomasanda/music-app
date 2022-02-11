@@ -25,11 +25,11 @@
         },
         "charset-normalizer": {
             "hashes": [
-                "sha256:876d180e9d7432c5d1dfd4c5d26b72f099d503e8fcc0feb7532c9289be60fcbd",
-                "sha256:cb957888737fc0bbcd78e3df769addb41fd1ff8cf950dc9e7ad7793f1bf44455"
+                "sha256:2842d8f5e82a1f6aa437380934d5e1cd4fcf2003b06fed6940769c164a480a45",
+                "sha256:98398a9d69ee80548c762ba991a4728bfc3836768ed226b3945908d1a688371c"
             ],
             "markers": "python_version >= '3'",
-            "version": "==2.0.10"
+            "version": "==2.0.11"
         },
         "click": {
             "hashes": [
@@ -180,12 +180,13 @@
         },
         "tidalapi": {
             "hashes": [
-                "sha256:9d0cd77d1da41850f5daa7d62eebceefd070fa65b7301cdb0ca522eebb574510",
-                "sha256:b016b97c8d5f03c7f25303286356b40a73cd482279ddade7c06778c00e7f5079",
-                "sha256:f58bb8af4786cc1291efd9afc30b5f1a47dfb7e640e4c46d89a5a9f3103f613f"
+                "sha256:1e3aca360279c05494baa60f40e127003094ab46d4698d3736f3f639d4539e14",
+                "sha256:ca1798da3df64beef445b0af8644c7ebea262c305b8b8a87687960ec273bfcd4",
+                "sha256:cf917b151df2c60efc4f6a1ce003dfdc988cf652bb222836d539aabc9adcdbc8",
+                "sha256:d4a6e70c758c44d087c521ac1e20e2b94d2389ae43d695ba9e4647c000abacbf"
             ],
             "index": "pypi",
-            "version": "==0.6.9"
+            "version": "==0.6.10"
         },
         "urllib3": {
             "hashes": [
@@ -197,11 +198,11 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:63d3dc1cf60e7b7e35e97fa9861f7397283b75d765afcaefd993d6046899de8f",
-                "sha256:aa2bb6fc8dee8d6c504c0ac1e7f5f7dc5810a9903e793b6f715a9f015bdadb9a"
+                "sha256:1421ebfc7648a39a5c58c601b154165d05cf47a3cd0ccb70857cbdacf6c8f2b8",
+                "sha256:b863f8ff057c522164b6067c9e28b041161b4be5ba4d0daceeaa50a163822d3c"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2.0.2"
+            "version": "==2.0.3"
         }
     },
     "develop": {}

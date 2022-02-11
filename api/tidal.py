@@ -2,7 +2,6 @@
 import tidalapi
 import json
 
-
 session = tidalapi.Session()
 
 try:
@@ -57,20 +56,6 @@ def get_album_tracks(album_id):
             'artist': track.artist.name,
         })
     return result
-
-
-def get_album_tracks_by_artist(artist):
-    albums = get_artist_albums(artist)
-    tracks = [session.get_album_tracks(album) for album in albums]
-    album_result = []
-    for album in albums:
-        album_result.append(session.get_album(album).name)
-    track_result = []
-    for track in tracks:
-        for x in track:
-            track_result.append(str(x.name))
-    return album_result
-    # track_result
     
 
 def get_playlists_tracks_popularity():
@@ -84,7 +69,7 @@ def get_playlists_tracks_popularity():
 
 def add_track_to_favorites(track_id):
     favorites.add_track(track_id)
-    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 
 def get_favorite_tracks():
@@ -103,21 +88,21 @@ def get_user_playlists():
     playlists = []
     for i, ps in enumerate(user_playlists):
         print('[' +str(i)+ '] '+ps.name)
-        playlists.append(ps.name)
+        playlists.append({'name': ps.name, 'id': ps.id})
+    print(playlists)
     return playlists
+
     
 
 def add_tracks_to_playlist(tracks, playlist):
-    playlists = session.get_user_playlists(user_id)
-    track_id_list = tracks
     to_index = 0
-    etag = session.request('GET', 'playlists/{}'.format(playlists[playlist].id)).headers['ETag']
+    etag = session.request('GET', 'playlists/{}'.format(playlist)).headers['ETag']
     headers = {'if-none-match': etag}
     data = {
-        'trackIds': ','.join(track_id_list),
+        'trackIds': tracks,
         'toIndex': to_index
     }
-    session.request('POST', 'playlists/{}/tracks/'.format(playlists[playlist].id), data = data, headers = headers)
+    session.request('POST', 'playlists/{}/tracks/'.format(playlist), data = data, headers = headers)
 
 def get_user_picture():
     country_code = session.country_code
@@ -126,6 +111,7 @@ def get_user_picture():
 
 def get_playback_info(track_id):    
     stream_link = session.request('GET', 'https://api.tidal.com/v1/tracks/{}/playbackinfopostpaywall?&audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL'.format(track_id), headers = {'authorization': 'Bearer {}'.format(access_token)})
+    print(stream_link)
     return stream_link.content
 
 

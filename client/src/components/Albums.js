@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
-import { ControlledMenu, MenuItem, useMenuState } from "@szhsin/react-menu";
+import {
+  ControlledMenu,
+  MenuItem,
+  SubMenu,
+  useMenuState,
+} from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 
 import tidal from "../api/tidal";
@@ -13,12 +18,14 @@ const Albums = ({
   albumTracks,
   setSelectedTrack,
   selectedTrack,
+  playlists,
 }) => {
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const { toggleMenu, ...menuProps } = useMenuState();
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [favoriteId, setFavoriteId] = useState();
+  const [playlistId, setPlaylistId] = useState("");
 
   useEffect(() => {
     try {
@@ -26,27 +33,12 @@ const Albums = ({
         tidal
           .get(`/search_artist_albums/${selectedValue.id}`)
           .then((res) => setData(res.data));
+        // .then((res) => console.log(res.data));
       }
     } catch (err) {
       console.error(err);
     }
   }, [selectedValue]);
-
-  // useEffect(() => {
-  //   let trackURLS = [];
-  //   try {
-  //     if (albumTracks !== null) {
-  //       albumTracks.forEach(async (id) => {
-  //         await tidal
-  //           .get(`get_playback_info/${id.id}`)
-  //           .then((url) => trackURLS.push(url.data[1].urls[0]))
-  //           .then(() => setTrackURL(trackURLS));
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, [albumTracks, setTrackURL]);
 
   useEffect(() => {
     try {
@@ -54,11 +46,25 @@ const Albums = ({
         tidal
           .get(`get_playback_info/${selectedTrack}`)
           .then((url) => setTrackURL(url.data[1].urls[0]));
+        // .then((url) => console.log(url));
       }
     } catch (err) {
       console.error(err);
     }
   }, [albumTracks, selectedTrack, setTrackURL]);
+
+  const addToPlaylist = async (id) => {
+    try {
+      let data = { track: favoriteId, playlist: id };
+      if (playlistId !== null) {
+        tidal
+          .post(`/add_track_to_playlist/${JSON.stringify(data)}`)
+          .then(() => console.log("success"));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleClick = async (albumId) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -126,6 +132,18 @@ const Albums = ({
                   >
                     Add to favorites
                   </MenuItem>
+                  <SubMenu label="Add to playlist">
+                    {playlists &&
+                      playlists.playlists.map((playlist) => (
+                        <MenuItem
+                          onClick={() => addToPlaylist(playlist.id)}
+                          key={playlist.id}
+                          id={playlist.id}
+                        >
+                          {playlist.name}
+                        </MenuItem>
+                      ))}
+                  </SubMenu>
                 </ControlledMenu>
                 {albumTracks.map((album, idx) => (
                   <motion.li
