@@ -3,9 +3,6 @@ from flask import Blueprint, jsonify, request
 from . import tidal
 import json
 import base64
-import re
-from xml.etree import ElementTree
-from mpegdash.parser import MPEGDASHParser
 
 
 main = Blueprint('main', __name__)
@@ -50,11 +47,7 @@ def get_playback_info(track_id):
     playback_info = tidal.get_playback_info(track_id)
     message = json.loads(playback_info.decode('utf-8'))
     message_bytes = base64.b64decode(message['manifest'])
-    # xml = re.sub(r'xmlns="[^"]+"', '', message_bytes, count=1)
-    # root = ElementTree.fromstring(xml)
-    # mpd = MPEGDASHParser.parse(xml)
     decoded = json.loads(message_bytes.decode('ascii'))
-    # print(mpd)
     return  jsonify(message, decoded)
 
 @main.route('/add_track_to_favorites/<track_id>', methods=['POST'])

@@ -80,7 +80,7 @@ def get_favorite_tracks():
     return favorite_tracks
 
 def create_playlist(playlist_name):
-    result = session.request('POST', 'users/{}/playlists'.format(user_id), data={'title': playlist_name})
+    result = session.request('POST', f'users/{user_id}/playlists', data={'title': playlist_name})
     return result
 
 def get_user_playlists():
@@ -96,21 +96,21 @@ def get_user_playlists():
 
 def add_tracks_to_playlist(tracks, playlist):
     to_index = 0
-    etag = session.request('GET', 'playlists/{}'.format(playlist)).headers['ETag']
+    etag = session.request('GET', f'playlists/{playlist}').headers['ETag']
     headers = {'if-none-match': etag}
     data = {
         'trackIds': tracks,
         'toIndex': to_index
     }
-    session.request('POST', 'playlists/{}/tracks/'.format(playlist), data = data, headers = headers)
+    session.request('POST', f'playlists/{playlist}/tracks/', data = data, headers = headers)
 
 def get_user_picture():
     country_code = session.country_code
-    user = session.request('GET', '/v1/users/{}?countryCode={}'.format(user_id, country_code), headers = {'authorization': 'Bearer {}'.format(access_token)})
+    user = session.request('GET', f'/v1/users/{user_id}?countryCode={country_code}', headers = {'authorization': 'Bearer {}'.format(access_token)})
     return user.content 
 
 def get_playback_info(track_id):    
-    stream_link = session.request('GET', 'https://api.tidal.com/v1/tracks/{}/playbackinfopostpaywall?&audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL'.format(track_id), headers = {'authorization': 'Bearer {}'.format(access_token)})
+    stream_link = session.request('GET', f'https://api.tidal.com/v1/tracks/{track_id}/playbackinfopostpaywall?&audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL', headers = {'authorization': f'Bearer {access_token}'})
     print(stream_link)
     return stream_link.content
 

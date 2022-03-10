@@ -23,7 +23,7 @@ const useFetch = () => {
       }, 300);
       return () => clearTimeout(timeoutId);
     }
-  }, [data.slug]);
+  }, [data]);
 
   return { data, setData };
 };

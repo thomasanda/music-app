@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import AsyncSelect from "react-select/async";
 import useFetch from "../hooks/useFetch";
 
 const SearchBar = ({ setSelectedValue }) => {
-  // const [inputValue, setInputValue] = useState("");
   const { data, setData } = useFetch();
 
   const handleInputChange = (value) => {
